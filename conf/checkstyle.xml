@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+	<!-- setting the default severity to warning -->
+	<property name="severity" value="warning" />
+
+	<!-- Checks that a package.html file exists for each package -->
+	<module name="JavadocPackage" />
+
+	<!-- Checks whether files end with a new line -->
+	<!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+	<module name="NewlineAtEndOfFile" />
+
+
+	<!-- Maximum file line length -->
+	<module name="FileLength">
+		<property name="max" value="999" />
+	</module>
+
+	<!-- No tabs -->
+	<module name="FileTabCharacter" />
+
+    <!-- Suppression -->
+	<module name="SuppressionCommentFilter"/>
+
+	<module name="SuppressWithNearbyCommentFilter">
+        <property name="commentFormat" value="CHECKSTYLE IGNORE"/>
+        <property name="checkFormat" value=".*"/>
+        <property name="influenceFormat" value="0"/>
+    </module>
+
+	<module name="TreeWalker">
+		<!-- Required for SuppressWithNearbyCommentFilter -->
+		<module name="FileContentsHolder" />
+
+		<!-- Checks for Javadoc comments -->
+		<!-- See http://checkstyle.sf.net/config_javadoc.html -->
+		<module name="JavadocType">
+			<property name="scope" value="public" />
+			<property name="allowMissingParamTags" value="true" />
+		</module>
+		<module name="JavadocStyle" />
+
+		<!-- Checks for naming conventions -->
+		<!-- See http://checkstyle.sf.net/config_naming.html -->
+		<module name="ConstantName" />
+		<module name="LocalFinalVariableName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="MethodName" />
+		<module name="PackageName" />
+		<module name="ParameterName" />
+		<module name="StaticVariableName" />
+		<module name="TypeName" />
+
+		<!-- Checks for imports -->
+		<!-- See http://checkstyle.sf.net/config_import.html -->
+		<module name="IllegalImport" />
+		<module name="RedundantImport" />
+		<module name="UnusedImports" />
+		<module name="AvoidStarImport" />
+
+		<!-- Checks for size violations -->
+		<!-- See http://checkstyle.sf.net/config_sizes.html -->
+		<module name="LineLength">
+			<property name="max" value="999" />
+			<property name="ignorePattern" value="^ *\* *[^ ]+$" />
+		</module>
+		<module name="MethodLength" />
+		<module name="ParameterNumber" />
+
+
+		<!-- Checks for whitespace -->
+		<!-- See http://checkstyle.sf.net/config_whitespace.html -->
+		<module name="EmptyForIteratorPad" />
+		<module name="MethodParamPad" />
+		<module name="NoWhitespaceAfter" />
+		<module name="NoWhitespaceBefore" />
+		<module name="ParenPad" />
+		<module name="TypecastParenPad" />
+		<module name="WhitespaceAfter">
+			<property name="tokens" value="COMMA, SEMI" />
+		</module>
+
+
+		<!-- Modifier checks -->
+		<!-- See http://checkstyle.sf.net/config_modifiers.html -->
+		<module name="ModifierOrder" />
+		<module name="RedundantModifier" />
+
+
+		<!-- Checks for blocks -->
+		<!-- See http://checkstyle.sf.net/config_blocks.html -->
+		<module name="AvoidNestedBlocks" />
+		<module name="EmptyBlock" />
+		<module name="LeftCurly" />
+		<module name="NeedBraces" />
+		<module name="RightCurly" />
+
+
+		<!-- Checks for common coding problems -->
+		<!-- See http://checkstyle.sf.net/config_coding.html -->
+		<module name="AvoidInlineConditionals" />
+		<module name="DoubleCheckedLocking" />
+		<module name="EmptyStatement" />
+		<module name="EqualsAvoidNull" />
+		<module name="EqualsHashCode" />
+		<module name="HiddenField">
+			<!-- Check local variables. Ignore parameters -->
+			<property name="tokens" value="VARIABLE_DEF" />
+		</module>
+		<module name="IllegalInstantiation" />
+		<module name="IllegalType">
+			<property name="tokens" value="PARAMETER_DEF, METHOD_DEF, VARIABLE_DEF" />
+		</module>
+		<module name="InnerAssignment" />
+		<module name="MissingSwitchDefault" />
+		<module name="MissingOverride" />
+		<module name="RedundantThrows" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+
+		<!-- Checks for class design -->
+		<!-- See http://checkstyle.sf.net/config_design.html -->
+		<module name="FinalClass" />
+		<module name="HideUtilityClassConstructor" />
+		<module name="InterfaceIsType" />
+		<module name="VisibilityModifier" />
+
+
+		<!-- Other -->
+		<!-- See http://checkstyle.sf.net/config_misc.html -->
+		<module name="ArrayTypeStyle" />
+
+
+		<module name="Indentation"/>
+
+		<module name="TodoComment" />
+		<module name="UpperEll" />
+	</module>
+</module>
