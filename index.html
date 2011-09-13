@@ -8,25 +8,30 @@
   <style type="text/css">
     body {
       margin-top: 1.0em;
-      background-color: #2866fe;
+      background-color: #aeacc1;
       font-family: Helvetica, Arial, FreeSans, san-serif;
       color: #000000;
     }
+    
     #container {
       margin: 0 auto;
       width: 700px;
     }
-    h1 { font-size: 3.8em; color: #d79901; margin-bottom: 3px; }
+    h1 { font-size: 3.8em; color: #51533e; margin-bottom: 3px; }
     h1 .small { font-size: 0.4em; }
     h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #d79901; }
-    h3 { text-align: center; color: #d79901; }
-    a { color: #d79901; }
+    h2 { font-size: 1.5em; color: #51533e; }
+    h3 { text-align: center; color: #51533e; }
+    a { color: #51533e; }
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
     .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
+    pre.cmd { background: #000; color: #fff; padding: 15px;}
+    div.gist { font-size: small; }
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
+    th { text-align: left; }
+    table { width: 100%; }
+    table, th, td { border: 1px solid black; }
   </style>
 </head>
 
@@ -46,13 +51,130 @@
       <span class="small">by <a href="http://github.com/PolymathicCoder">PolymathicCoder</a></span></h1>
 
     <div class="description">
-      Yap4j is an annotation-driven POJO-based one-liner CSV parsing library...  In other words, it has never been this easy!
+      Yap4j is an annotation-driven POJO-based one-liner CSV parsing library...
+      <br/>
+      In other words, it has never been this easy!
     </div>
-
+    
+    <h2>Motivation</h2>
+    <p>
+    Yap4j (Yet Another Java Parser For Java) was born after I spent a long frastruting couple of days experimenting with library after library to accomplish the simple task of parsing a CSV (Comma Seaprated Value) file.
+    I struggled with various libaries from <a href="http://commons.apache.org/sandbox/csv/">Apache's Commons CSV</a>, which claims to unify and provide a common and simple interface with contributions from <a href="http://kasparov.skife.org/csv/">Skife CSV</a>, <a href="http://opencsv.sourceforge.net/">Open CSV</a>, and <a href="http://repo1.maven.org/maven2/genjava/gj-csv/">Genjava CSV</a>, to <a href="http://supercsv.sourceforge.net/index.html">Super CSV</a>, which is probably the most usable and documented of all.
+    Like any programmer with some free bandwidth, I decided to write my own and open-source it with the hope that <b>nobody would have to go through what I went through over the most trival of tasks</b>.
+    <br/>
+    Enjoy and <a href="https://github.com/PolymathicCoder/Yap4j">Fork</a>!
+    </p>
+    
+    <h2>Features</h2>
+    <ul>
+      <li>Simple API. One line of code!</li>
+      <li>Reading a CSV file into a list of POJOs (Plain Java Objects) effortlessly</li>
+      <li>Metadata-driven allowing to specify Object-CSV mapping using Java annotations</li>
+      <li>Automatically converts to and from a wide range of data types including support for types from popular libraries such as Joda Time</li>
+      <li>Support for custom record delimiters</li>
+    </ul>
+    
+    <h2>Example</h2>
+    <div class="gist">
+     <script src="https://gist.github.com/1202471.js"> </script>
+    </div>
+    
+    <h2>Object-CSV Mapping Annotations</h2>
+    
+    Classes and Fields can be selectively decorated with annotations to override defaults in the spirit of the configuration by exception best practice.
+    
+    <h3>@CsvFile</h3>
+    This is a class level annotation used on POJOs to be mapped to CSV files.
+    <br/><br/>
+    <table>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Required</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td><b>fileName</b></td>
+      <td>The name and path to the CSV file</td>
+      <td>Yes</td>
+      <td>N/A</td>
+    </tr>
+    <tr>
+      <td><b>delimiter</b></td>
+      <td>Record delimiters in the CSV file</td>
+      <td>No</td>
+      <td>Comma ( , )</td>
+    </tr>
+    <tr>
+      <td><b>noHeader</b></td>
+      <td>determines wether the CSV has a header line or not</td>
+      <td>No</td>
+      <td>False</td>
+    </tr>
+    </table>
+    
+    <br/>
+    
+    <h3>@CsvField</h3>
+    This is a field-level annotation.
+    There is no requiremet on any field using this annotation to have a public access modifier, or accessor/mutator methods.
+    The mapping will work on private and protected fields with no special accommodation. 
+    <br/><br/>
+    <table>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Required</th>
+      <th>Default</th>
+    </tr>
+    <tr>
+      <td><b>header</b></td>
+      <td>The name of the corresponding record header in the CSV file</td>
+      <td>Only if the noHeader attribute of @CsvFile is false</td>
+      <td>N/A</td>
+    </tr>
+    <tr>
+      <td><b>position</b></td>
+      <td>The position of the corresponding record in the CSV file</td>
+      <td>Only if the noHeader attribute of @CsvFile is true</td>
+      <td>N/A</td>
+    </tr>
+    <tr>
+      <td><b>format</b></td>
+      <td>Determines how certain temporal types are formated in the CSV record such as java.util.Date and org.joda.time.Period</td>
+      <td>Only if the field to-be-mapped-to is temporal</td>
+      <td>Empty String</td>
+    </tr>
+    <tr>
+      <td><b>optional</b></td>
+      <td>Determines whether the field is optional in the CSV file or not</td>
+      <td>No</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td><b>ignore</b></td>
+      <td>Determines whether the mapping be ignored or not</td>
+      <td>No</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td><b>defaultValue</b></td>
+      <td>Determines the default value to be set if the record is empty in the CSV file</td>
+      <td>Only if the field to-be-mapped-to is primitive</td>
+      <td>Empty String</td>
+    </tr>
+    </table>
+    
+    <h2>License</h2>
+    <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>
+    
     <h2>Authors</h2>
-<p>PolymathicCoder (abdelmonaim.remani@gmail.com)<br/><br/>      </p>
+<p>PolymathicCoder (abdelmonaim.remani@gmail.com)
+<br/>
+<br/>      </p>
 <h2>Contact</h2>
-<p>Abdelmonaim Remani (abdelmonaim.remani@gmail.com)<br/>      </p>
+<p>Abdelmonaim Remani (abdelmonaim.remani@gmail.com)
+<br/>      </p>
 
 
     <h2>Download</h2>
@@ -63,7 +185,7 @@
     </p>
     <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
       by running:
-      <pre>$ git clone git://github.com/PolymathicCoder/Yap4j</pre>
+      <pre class="cmd">$ git clone git://github.com/PolymathicCoder/Yap4j</pre>
     </p>
 
     <div class="footer">
