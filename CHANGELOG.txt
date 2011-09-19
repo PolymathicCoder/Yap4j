@@ -1,14 +1,30 @@
 Change Log
 ==========
 
-Version 0.1 *(2011-10-10)*
+Version 0.2.0 *(2011-09-20)*
+----------------------------
+
+New Features:
+
+ * Added delimiter escaping through quotes
+
+Bug Fixes:
+
+ *
+
+Version 0.1.0 *(2011-09-13)*
 ----------------------------
 
 Initial version.
 
 New Features:
 
- *
+ * Simple API. One line of code!
+ * Reading a CSV file into a list of POJOs (Plain Java Objects) effortlessly
+ * Metadata-driven allowing to specify Object-CSV mapping using Java annotations
+ * Automatically converts to and from a wide range of data types including support for types from popular libraries such as Joda Time
+ * Support for custom record delimiters
+
 Bug Fixes:
 
- *
+ * N/A
