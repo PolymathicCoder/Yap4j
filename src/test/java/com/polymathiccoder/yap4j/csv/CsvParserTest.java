@@ -37,7 +37,7 @@ import com.polymathiccoder.yap4j.csv.annotation.CsvFile;
  * A test class for CsvParser.
  *
  * @author  Abdelmonaim Remani
- * @version 0.1.0
+ * @version 0.2.0
  * @since 0.1.0
  */
 @RunWith(value = Theories.class)
@@ -62,6 +62,7 @@ public class CsvParserTest {
             ImmutablePair.of(Valid_OptionalFields.class, Valid_OptionalFields.expected),
             ImmutablePair.of(Valid_IgnoredFields.class, Valid_IgnoredFields.expected),
             ImmutablePair.of(Valid_DefaultFields.class, Valid_DefaultFields.expected),
+            ImmutablePair.of(Valid_EscapedFields.class, Valid_EscapedFields.expected),
 
             ImmutablePair.of(Invalid_WithoutHeader.class, Invalid_WithoutHeader.expected),
             ImmutablePair.of(Invalid_WithHeader.class, Invalid_WithoutHeader.expected),
@@ -412,6 +413,44 @@ public class CsvParserTest {
         private String string;
 
         public static ParsingException expected = new ParsingException();
+    }
+
+    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.AvoidDuplicateLiterals" })
+    @Data @AllArgsConstructor @NoArgsConstructor
+    @CsvFile(fileName = "data/escapedFields.csv")
+    public static class Valid_EscapedFields {
+        @CsvEntry(header = "csv_primitive")
+        private int primitive;
+        @CsvEntry(header = "csv_string")
+        private String string;
+        @CsvEntry(header = "csv_date", format = "MM/dd/yyyy")
+        private Date date;
+        @CsvEntry(header = "csv_enumer")
+        private Enumer enumer;
+        @CsvEntry(header = "csv_period", format = "HH:mm:ss")
+        private Period period;
+        @CsvEntry(header = "csv_timeZone")
+        private TimeZone timeZone;
+        @CsvEntry(header = "csv_locale")
+        private Locale locale;
+        @CsvEntry(header = "emp_url")
+        private URL url;
+
+        public static List<Valid_EscapedFields> expected;
+        static {
+            try {
+                expected = Arrays.asList(
+                    new Valid_EscapedFields(1, "I'mString1,Escaped", new DateTime(2011, 1, 1, 0, 0, 0, 0).toDate(), Enumer.VALUE_1,
+                            new Period(0, 0, 0, 0, 11, 11, 11, 0), TimeZone.getTimeZone("Africa/Casablanca"),
+                            new Locale("ar"), new URL("http://www.IAmAUrl1.com")),
+                    new Valid_EscapedFields(2, "I'mString2", new DateTime(2012, 2, 2, 0, 0, 0, 0).toDate(), Enumer.VALUE_2,
+                            new Period(0, 0, 0, 0, 22, 22, 22, 0), TimeZone.getTimeZone("America/Los_Angeles"),
+                            new Locale("en"), new URL("http://www.IAmAUrl2.com"))
+                );
+            } catch (MalformedURLException malformedURLException) { // NOPMD
+                log.severe("This should never happen");
+            }
+        }
     }
     // CHECKSTYLE:ON
 }

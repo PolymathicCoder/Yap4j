@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+import com.polymathiccoder.yap4j.Parser;
 import com.polymathiccoder.yap4j.csv.annotation.CsvEntry;
 import com.polymathiccoder.yap4j.csv.annotation.CsvFile;
 
@@ -18,7 +19,7 @@ import com.polymathiccoder.yap4j.csv.annotation.CsvFile;
  * Used to examines metadata to build a parsing model and instantiates a CSV parser.
  *
  * @author  Abdelmonaim Remani
- * @version 0.1.0
+ * @version 0.2.0
  * @since 0.1.0
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE) // CHECKSTYLE IGNORE
@@ -29,7 +30,7 @@ public final class CsvParserFactory { // NOPMD
      * @param clazz the type to create the parser for
      * @return the CSV parser
      */
-    public static CsvParser createParser(final Class<?> clazz) {
+    public static Parser createParser(final Class<?> clazz) {
         //Process annotations and build parsing model
         final CsvParserFactory.ParsingModel.Record fileParsingModel = new CsvParserFactory.ParsingModel.Record(
                 ((CsvFile) clazz.getAnnotation(CsvFile.class)).fileName(),

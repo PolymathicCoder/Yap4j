@@ -6,12 +6,15 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import lombok.Cleanup;
 import lombok.extern.java.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.polymathiccoder.yap4j.Parser;
 import com.polymathiccoder.yap4j.common.TypeConverter;
 import com.polymathiccoder.yap4j.csv.annotation.CsvEntry;
 
@@ -19,11 +22,11 @@ import com.polymathiccoder.yap4j.csv.annotation.CsvEntry;
  * Used a CSV file into a list of object and vice versa.
  *
  * @author  Abdelmonaim Remani
- * @version 0.1.0
+ * @version 0.2.0
  * @since 0.1.0
  */
 @Log
-public final class CsvParser {
+public final class CsvParser implements Parser {
 
     /** The type to parse into. */
     private final transient Class<?> clazz;
@@ -42,12 +45,10 @@ public final class CsvParser {
         this.parsingModel = parsingModel;
     }
 
-    /**
-     * Deserializes CSV records in file as objects of the specified type.
-     *
-     * @param <T> the type to parse into
-     * @return the list of CSV records as objects of the specified type
+    /* (non-Javadoc)
+     * @see com.polymathiccoder.yap4j.csv.Parser#deserialize()
      */
+    @Override
     @SuppressWarnings("unchecked")
     public <T> List<T> deserialize() {
         final List<T> list = new ArrayList<T>();
@@ -84,7 +85,6 @@ public final class CsvParser {
      *           / \
      *          /   \
      *         Exp Set
-     *
      */
     private void mapBeanFieldsToPositionsWithoutRecordHeader() {
         //File with no header line
@@ -162,13 +162,33 @@ public final class CsvParser {
      */
     private Object parseDataLine(final String dataline) {
         try {
-            final String[] tokens = StringUtils.splitByWholeSeparatorPreserveAllTokens(dataline, parsingModel.record.delimiter); // NOPMD
+            //Tokenize the data line
+            final List<String> csvFileHeaders = new ArrayList<String>(); // NOPMD
+            final StringBuilder regExBuilder = new StringBuilder();
+            regExBuilder.append("([^\"]+?)\"")
+                .append(parsingModel.record.delimiter)
+                .append("?|([^")
+                .append(parsingModel.record.delimiter)
+                .append("]+)")
+                .append(parsingModel.record.delimiter)
+                .append("?|")
+                .append(parsingModel.record.delimiter);
+            final Pattern regEx = Pattern.compile(regExBuilder.toString());
+            final Matcher regexMatcher = regEx.matcher(dataline);
+
+            while (regexMatcher.find()) {
+                csvFileHeaders.add(StringUtils.strip(regexMatcher.group(), "\"" + parsingModel.record.delimiter));
+            }
+
+            if (StringUtils.endsWith(dataline, ",")) { // Add missing token
+                csvFileHeaders.add(StringUtils.EMPTY);
+            }
 
             //Construct the beans
             final Object instance = clazz.newInstance(); // NOPMD
             for (CsvParserFactory.ParsingModel.Entry entry : parsingModel.entries) {
                 if (parsingModel.fieldPositions.get(entry) != null) {
-                    final String value = tokens[((Integer) parsingModel.fieldPositions.get(entry)).intValue()];
+                    final String value = csvFileHeaders.get(((Integer) parsingModel.fieldPositions.get(entry)).intValue());
                     final Field beanField = clazz.getDeclaredField(entry.beanFieldName);
                     beanField.setAccessible(true);
                     //Value?
@@ -203,6 +223,14 @@ public final class CsvParser {
             log.severe(String.format(ParsingErrorMessages.ERROR_GENERIC, parsingModel.record.fileName, List.class.getSimpleName(), clazz.getSimpleName()));
         }
         return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.polymathiccoder.yap4j.csv.Parser#serialize(java.util.List)
+     */
+    @Override
+    public <T> void serialize(final List<T> list) {
+        //TODO
     }
 
     /**
